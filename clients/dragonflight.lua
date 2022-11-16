@@ -105,13 +105,15 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
 
     -- if not IDTip.Helpers.IsPTR() then -- TODO: Remove this eventually
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(self, a)
-      local id = select(2, self:GetSpell())
-      IDTip:addLine(self, id, IDTip.kinds.spell)
+      if self.GetSpell then
+        local id = select(2, self:GetSpell())
+        IDTip:addLine(self, id, IDTip.kinds.spell)
 
-      local outputItemInfo = C_TradeSkillUI.GetRecipeOutputItemData(id, nil)
-      if outputItemInfo and outputItemInfo.itemID then
-        IDTip:addGenericLine(self, "== Recipe Output ==") -- TODO: RecipeOutputItemID type ?
-        IDTip:addLine(self, outputItemInfo.itemID, IDTip.kinds.item)
+        local outputItemInfo = C_TradeSkillUI.GetRecipeOutputItemData(id, nil)
+        if outputItemInfo and outputItemInfo.itemID then
+          IDTip:addGenericLine(self, "== Recipe Output ==") -- TODO: RecipeOutputItemID type ?
+          IDTip:addLine(self, outputItemInfo.itemID, IDTip.kinds.item)
+        end
       end
     end)
     -- else
@@ -178,6 +180,9 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
         if C_PetBattles.IsInBattle() then
           return
         end
+      end
+      if not GetMouseFocus().portrait or GetMouseFocus() ~= WorldFrame then
+        return
       end
       local unit = select(2, tooltip:GetUnit())
       if unit then
