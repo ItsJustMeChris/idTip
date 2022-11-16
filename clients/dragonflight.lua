@@ -4,7 +4,7 @@ local _, IDTip = ...
 
 if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
   do
-    IDTip:Log("Dragonflight Loaded")
+    -- IDTip:Log("Dragonflight Loaded")
 
     IDTip:RegisterAddonLoad("Blizzard_AchievementUI", function()
       hooksecurefunc(AchievementTemplateMixin, "OnEnter", function(self)
