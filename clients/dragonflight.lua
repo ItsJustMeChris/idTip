@@ -186,6 +186,9 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
       end
       local unit = select(2, tooltip:GetUnit())
       if unit then
+        if not UnitIsUnit('mouseover', unit) and not UnitIsUnit('target', unit) then
+          return
+        end
         local guid = UnitGUID(unit) or ""
         local id = tonumber(guid:match("-(%d+)-%x+$"), 10)
         if id and guid:match("%a+") ~= "Player" then
