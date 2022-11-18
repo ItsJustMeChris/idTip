@@ -181,7 +181,7 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
           return
         end
       end
-      if (GetMouseFocus() and not GetMouseFocus().portrait) or GetMouseFocus() ~= WorldFrame then
+      if (GetMouseFocus() and not GetMouseFocus().portrait) and GetMouseFocus() ~= WorldFrame then
         return
       end
       local unit = select(2, tooltip:GetUnit())
