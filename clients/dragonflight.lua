@@ -4,6 +4,48 @@ local _, IDTip = ...
 
 if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
   do
+    IDTip:RegisterAddonLoad("Blizzard_EncounterJournal", function()
+      local hooked = {}
+      local function HookHeaderPool()
+        local headers = EncounterJournal.encounter.usedHeaders
+        for i = 1, #headers do
+          local header = headers[i]
+          if not hooked[header] and header.spellID and header.button then
+            header.button:HookScript("OnEnter", function()
+              if header.spellID ~= 0 then
+                GameTooltip:SetOwner(header.button, "ANCHOR_NONE")
+                GameTooltip:SetPoint("TOPLEFT", header.button, "TOPRIGHT", 0, 0)
+                IDTip:addLine(GameTooltip, header.spellID, IDTip.kinds.spell)
+                GameTooltip:Show()
+              end
+            end)
+            header.button:HookScript("OnClick", function()
+              HookHeaderPool()
+            end)
+            hooked[header] = true
+          end
+        end
+      end
+
+      EncounterJournal.encounter.info.bossTab:HookScript("OnClick", function()
+        HookHeaderPool()
+      end)
+
+      EncounterJournal.encounter.info.overviewTab:HookScript("OnClick", function()
+        HookHeaderPool()
+      end)
+
+      -- local GSI = C_EncounterJournal.GetSectionInfo
+      -- C_EncounterJournal.GetSectionInfo = function(sectionID)
+      --   local sectionInfo = GSI(sectionID)
+      --   if sectionInfo and sectionInfo.spellID ~= (nil or 0) then
+      --     sectionInfo.title = sectionInfo.title .. " SpellID: " .. tostring(sectionInfo.spellID)
+      --     IDTip:addLine(GameTooltip, sectionInfo.spellID, IDTip.kinds.spell)
+      --     GameTooltip:Show()
+      --   end
+      --   return sectionInfo
+      -- end
+    end)
     -- IDTip:Log("Dragonflight Loaded")
 
     IDTip:RegisterAddonLoad("Blizzard_AchievementUI", function()
