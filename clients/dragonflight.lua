@@ -69,27 +69,31 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
         end)
       end)
 
-      hooksecurefunc(fr, "GetCriteria", function(self, index)
+      hooksecurefunc(fr, "GetCriteria", function(self, asdf)
         local frame = self:GetElementAtIndex(
           "AchievementCriteriaTemplate",
           self.criterias,
-          index,
+          asdf,
           AchievementFrame_LocalizeCriteria
         )
 
-        if hooked[frame] then
-          return
-        end
+        local _i = asdf
 
-        hooked[frame] = true
+        local _frame_onenter = frame.OnEnter
+        local _frame_onleave = frame.OnLeave
 
-        frame:HookScript("OnEnter", function(self)
+        frame:SetScript("OnEnter", function(...)
+          local self = ...
+          if _frame_onenter then
+            _frame_onenter(...)
+          end
           local button = self:GetParent() and self:GetParent():GetParent()
-          if not button or not button.id or index == 0 then
+          if not button or not button.id or _i == 0 then
             return
           end
 
-          local criteriaid = select(10, GetAchievementCriteriaInfo(button.id, index))
+          local criteriaid = select(10, GetAchievementCriteriaInfo(button.id, _i))
+
           GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
           GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
           IDTip:addLine(GameTooltip, button.id, IDTip.kinds.achievement)
@@ -97,7 +101,12 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
           GameTooltip:Show()
         end)
 
-        frame:HookScript("OnLeave", function()
+        -- frame:HookScript("OnEnter", )
+
+        frame:SetScript("OnLeave", function(...)
+          if _frame_onleave then
+            _frame_onleave(...)
+          end
           GameTooltip:Hide()
         end)
       end)
