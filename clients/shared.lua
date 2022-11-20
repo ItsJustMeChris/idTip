@@ -243,9 +243,9 @@ if not IDTip.Helpers.IsClassic() then
 
   -- Pet battle buttons
   hooksecurefunc("PetBattleAbilityButton_OnEnter", function(self)
-    local petIndex = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
+    local petIndex = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
     if self:GetEffectiveAlpha() > 0 then
-      local id = select(1, C_PetBattles.GetAbilityInfo(LE_BATTLE_PET_ALLY, petIndex, self:GetID()))
+      local id = select(1, C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, petIndex, self:GetID()))
       if id then
         local oldText = PetBattlePrimaryAbilityTooltip.Description:GetText(id)
         PetBattlePrimaryAbilityTooltip.Description:SetText(
