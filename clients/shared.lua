@@ -56,18 +56,16 @@ local function attachItemTooltip(self)
     return
   end
 
-  if not self.GetItem then
-    return
-  end
-
   local link
   if self == ShoppingTooltip1 or self == ShoppingTooltip2 then
     if self.info and self.info.tooltipData and self.info.tooltipData.guid then
       local guid = self.info.tooltipData.guid
       link = C_Item.GetItemLinkByGUID(guid)
     end
-  else
+  elseif self.GetItem then
     link = select(2, self:GetItem())
+  else
+    return
   end
 
   if not link then
