@@ -69,91 +69,132 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
 
       local hooked = {}
 
-      local fr = AchievementTemplateMixin:GetObjectiveFrame()
-      hooksecurefunc(fr, "GetMiniAchievement", function(self, index)
-        local frame = self:GetElementAtIndex(
-          "MiniAchievementTemplate",
-          self.miniAchivements,
-          index,
-          AchievementButton_LocalizeMiniAchievement
-        )
+      hooksecurefunc("AchievementObjectives_DisplayCriteria", function(id)
 
-        if hooked[frame] then
-          return
-        end
+        local fr = AchievementTemplateMixin:GetObjectiveFrame()
+        hooksecurefunc(fr, "GetMiniAchievement", function(self, index)
+          local frame = self:GetElementAtIndex(
+            "MiniAchievementTemplate",
+            self.miniAchivements,
+            index,
+            AchievementButton_LocalizeMiniAchievement
+          )
 
-        hooked[frame] = true
-
-        frame:HookScript("OnEnter", function(self)
-          local button = self:GetParent() and self:GetParent():GetParent()
-          if not button or not button.id then
+          if hooked[frame] then
             return
           end
 
-          local achievementList = {}
-          for i in next, achievementList do
-            achievementList[i] = nil
-          end
+          hooked[frame] = true
 
-          local achievementID = button.id
+          frame:HookScript("OnEnter", function(self)
+            local button = self:GetParent() and self:GetParent():GetParent()
+            if not button or not button.id then
+              return
+            end
 
-          tinsert(achievementList, 1, achievementID)
-          while GetPreviousAchievement(achievementID) do
-            tinsert(achievementList, 1, GetPreviousAchievement(achievementID))
-            achievementID = GetPreviousAchievement(achievementID)
-          end
+            local achievementList = {}
+            for i in next, achievementList do
+              achievementList[i] = nil
+            end
 
-          local aid = achievementList[index]
-          -- GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
-          -- GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
-          IDTip:addLine(GameTooltip, aid, IDTip.kinds.achievement)
-          GameTooltip:Show()
+            local achievementID = button.id
+
+            tinsert(achievementList, 1, achievementID)
+            while GetPreviousAchievement(achievementID) do
+              tinsert(achievementList, 1, GetPreviousAchievement(achievementID))
+              achievementID = GetPreviousAchievement(achievementID)
+            end
+
+            local aid = achievementList[index]
+            -- GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
+            -- GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
+            IDTip:addLine(GameTooltip, aid, IDTip.kinds.achievement)
+            GameTooltip:Show()
+          end)
+
+          frame:HookScript("OnLeave", function()
+            GameTooltip:Hide()
+          end)
         end)
 
-        frame:HookScript("OnLeave", function()
-          GameTooltip:Hide()
+        hooksecurefunc(fr, "GetMeta", function(self, asdf)
+          local frame = self:GetElementAtIndex("MetaCriteriaTemplate", self.metas, asdf,
+            AchievementButton_LocalizeMetaAchievement)
+
+          local _i = asdf
+
+          local _frame_onenter = frame.OnEnter
+          local _frame_onleave = frame.OnLeave
+
+          frame:SetScript("OnEnter", function(...)
+            local self = ...
+            if _frame_onenter then
+              _frame_onenter(...)
+            end
+            local button = self:GetParent() and self:GetParent():GetParent()
+            if not button or not button.id or _i == 0 then
+              return
+            end
+
+            local criteriaid = select(10, GetAchievementCriteriaInfo(button.id, _i))
+
+            GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
+            IDTip:addLine(GameTooltip, button.id, IDTip.kinds.achievement)
+            IDTip:addLine(GameTooltip, criteriaid, IDTip.kinds.criteria)
+            GameTooltip:Show()
+          end)
+
+          -- frame:HookScript("OnEnter", )
+
+          frame:SetScript("OnLeave", function(...)
+            if _frame_onleave then
+              _frame_onleave(...)
+            end
+            GameTooltip:Hide()
+          end)
         end)
-      end)
 
-      hooksecurefunc(fr, "GetCriteria", function(self, asdf)
-        local frame = self:GetElementAtIndex(
-          "AchievementCriteriaTemplate",
-          self.criterias,
-          asdf,
-          AchievementFrame_LocalizeCriteria
-        )
+        hooksecurefunc(fr, "GetCriteria", function(self, asdf)
+          local frame = self:GetElementAtIndex(
+            "AchievementCriteriaTemplate",
+            self.criterias,
+            asdf,
+            AchievementFrame_LocalizeCriteria
+          )
 
-        local _i = asdf
+          local _i = asdf
 
-        local _frame_onenter = frame.OnEnter
-        local _frame_onleave = frame.OnLeave
+          local _frame_onenter = frame.OnEnter
+          local _frame_onleave = frame.OnLeave
 
-        frame:SetScript("OnEnter", function(...)
-          local self = ...
-          if _frame_onenter then
-            _frame_onenter(...)
-          end
-          local button = self:GetParent() and self:GetParent():GetParent()
-          if not button or not button.id or _i == 0 then
-            return
-          end
+          frame:SetScript("OnEnter", function(...)
+            local self = ...
+            if _frame_onenter then
+              _frame_onenter(...)
+            end
+            local button = self:GetParent() and self:GetParent():GetParent()
+            if not button or not button.id or _i == 0 then
+              return
+            end
 
-          local criteriaid = select(10, GetAchievementCriteriaInfo(button.id, _i))
+            local criteriaid = select(10, GetAchievementCriteriaInfo(button.id, _i))
 
-          GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
-          GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
-          IDTip:addLine(GameTooltip, button.id, IDTip.kinds.achievement)
-          IDTip:addLine(GameTooltip, criteriaid, IDTip.kinds.criteria)
-          GameTooltip:Show()
-        end)
+            GameTooltip:SetOwner(button:GetParent(), "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 0)
+            IDTip:addLine(GameTooltip, button.id, IDTip.kinds.achievement)
+            IDTip:addLine(GameTooltip, criteriaid, IDTip.kinds.criteria)
+            GameTooltip:Show()
+          end)
 
-        -- frame:HookScript("OnEnter", )
+          -- frame:HookScript("OnEnter", )
 
-        frame:SetScript("OnLeave", function(...)
-          if _frame_onleave then
-            _frame_onleave(...)
-          end
-          GameTooltip:Hide()
+          frame:SetScript("OnLeave", function(...)
+            if _frame_onleave then
+              _frame_onleave(...)
+            end
+            GameTooltip:Hide()
+          end)
         end)
       end)
     end)
