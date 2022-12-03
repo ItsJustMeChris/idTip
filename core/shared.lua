@@ -16,6 +16,7 @@ IDTip.kinds = {
   currency = "CurrencyID",
   artifactpower = "ArtifactPowerID",
   enchant = "EnchantID",
+  faction = "FactionID",
   bonus = "BonusID",
   gem = "GemID",
   mount = "MountID",

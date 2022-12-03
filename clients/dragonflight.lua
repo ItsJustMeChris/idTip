@@ -56,6 +56,10 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
         GameTooltip:Show()
       end)
 
+      hooksecurefunc(AchievementTemplateMixin, "OnLeave", function(self)
+        GameTooltip:Hide()
+      end)
+
       hooksecurefunc("AchievementFrameSummaryAchievement_OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_NONE")
         GameTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 0)
@@ -314,6 +318,14 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
     ProfessionsFrame.SpecPage.DetailedView.Path:HookScript("OnEnter", hookProfSpecPathEnter)
 
     hooksecurefunc(ProfessionsSpecPathMixin, "OnEnter", hookProfSpecPathEnter)
+
+    hooksecurefunc(QuestInfoReputationRewardButtonMixin, "SetUpMajorFactionReputationReward",
+      function(self, rewardInfo)
+        self.factionID = rewardInfo.factionID
+      end)
+    hooksecurefunc(QuestInfoReputationRewardButtonMixin, "OnEnter", function(self)
+      IDTip:addLine(GameTooltip, self.factionID, IDTip.kinds.faction)
+    end)
 
     -- local function gameobjecthandler(tooltip, tooltipData)
     --   -- DevTools_Dump(tooltipData)
