@@ -329,34 +329,6 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
       IDTip:addLine(self, id, IDTip.kinds.currency)
     end)
 
-    hooksecurefunc(ProfessionSpecTabMixin, "OnEnter", function(self)
-      IDTip:addLine(GameTooltip, self.traitTreeID, IDTip.kinds.profspectreeid)
-    end)
-
-    local function hookProfSpecPathEnter(self)
-      local nid = self:GetNodeID()
-      local cid = self:GetConfigID()
-      -- local eid = C_ProfSpecs.GetUnlockEntryForPath(self:GetNodeID());
-      local info = C_Traits.GetNodeInfo(cid, nid)
-      if info.activeEntry then
-        local eid = info.activeEntry.entryID
-        local entry = C_Traits.GetEntryInfo(cid, eid)
-        local did = entry.definitionID
-        IDTip:addLine(GameTooltip, eid, IDTip.kinds.traitentry)
-        IDTip:addLine(GameTooltip, did, IDTip.kinds.traitdef)
-      end
-
-      local f = self:GetTalentFrame()
-      local rnid = f:GetRootNodeID()
-      IDTip:addLine(GameTooltip, rnid, IDTip.kinds.rootprofspecnode)
-      IDTip:addLine(GameTooltip, nid, IDTip.kinds.profspecnode)
-      IDTip:addLine(GameTooltip, self:GetConfigID(), IDTip.kinds.traitconfig)
-    end
-
-    ProfessionsFrame.SpecPage.DetailedView.Path:HookScript("OnEnter", hookProfSpecPathEnter)
-
-    hooksecurefunc(ProfessionsSpecPathMixin, "OnEnter", hookProfSpecPathEnter)
-
     hooksecurefunc(QuestInfoReputationRewardButtonMixin, "SetUpMajorFactionReputationReward",
       function(self, rewardInfo)
         self.factionID = rewardInfo.factionID
@@ -364,6 +336,37 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
     hooksecurefunc(QuestInfoReputationRewardButtonMixin, "OnEnter", function(self)
       IDTip:addLine(GameTooltip, self.factionID, IDTip.kinds.faction)
     end)
+
+    IDTip:RegisterAddonLoad("Blizzard_Professions", function()
+      hooksecurefunc(ProfessionSpecTabMixin, "OnEnter", function(self)
+        IDTip:addLine(GameTooltip, self.traitTreeID, IDTip.kinds.profspectreeid)
+      end)
+
+      local function hookProfSpecPathEnter(self)
+        local nid = self:GetNodeID()
+        local cid = self:GetConfigID()
+        -- local eid = C_ProfSpecs.GetUnlockEntryForPath(self:GetNodeID());
+        local info = C_Traits.GetNodeInfo(cid, nid)
+        if info.activeEntry then
+          local eid = info.activeEntry.entryID
+          local entry = C_Traits.GetEntryInfo(cid, eid)
+          local did = entry.definitionID
+          IDTip:addLine(GameTooltip, eid, IDTip.kinds.traitentry)
+          IDTip:addLine(GameTooltip, did, IDTip.kinds.traitdef)
+        end
+
+        local f = self:GetTalentFrame()
+        local rnid = f:GetRootNodeID()
+        IDTip:addLine(GameTooltip, rnid, IDTip.kinds.rootprofspecnode)
+        IDTip:addLine(GameTooltip, nid, IDTip.kinds.profspecnode)
+        IDTip:addLine(GameTooltip, self:GetConfigID(), IDTip.kinds.traitconfig)
+      end
+
+      ProfessionsFrame.SpecPage.DetailedView.Path:HookScript("OnEnter", hookProfSpecPathEnter)
+
+      hooksecurefunc(ProfessionsSpecPathMixin, "OnEnter", hookProfSpecPathEnter)
+    end)
+    
 
     -- local function gameobjecthandler(tooltip, tooltipData)
     --   -- DevTools_Dump(tooltipData)
