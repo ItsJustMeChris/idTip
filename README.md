@@ -116,6 +116,8 @@ function IDTipLib:kindEnabled(kind)
 
 ## Contributors
 
+[hammerOwne](https://github.com/hammerOwen)
+
 [zarillion](https://github.com/zarillion)
 
 [Dunati](https://github.com/Dunati)
