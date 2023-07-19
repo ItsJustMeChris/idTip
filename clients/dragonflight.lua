@@ -371,36 +371,6 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
       end)
     end)
 
-    IDTip:RegisterAddonLoad("Blizzard_Professions", function()
-      hooksecurefunc(ProfessionSpecTabMixin, "OnEnter", function(self)
-        IDTip:addLine(GameTooltip, self.traitTreeID, IDTip.kinds.profspectreeid)
-      end)
-
-      local function hookProfSpecPathEnter(self)
-        local nid = self:GetNodeID()
-        local cid = self:GetConfigID()
-        -- local eid = C_ProfSpecs.GetUnlockEntryForPath(self:GetNodeID());
-        local info = C_Traits.GetNodeInfo(cid, nid)
-        if info.activeEntry then
-          local eid = info.activeEntry.entryID
-          local entry = C_Traits.GetEntryInfo(cid, eid)
-          local did = entry.definitionID
-          IDTip:addLine(GameTooltip, eid, IDTip.kinds.traitentry)
-          IDTip:addLine(GameTooltip, did, IDTip.kinds.traitdef)
-        end
-
-        local f = self:GetTalentFrame()
-        local rnid = f:GetRootNodeID()
-        IDTip:addLine(GameTooltip, rnid, IDTip.kinds.rootprofspecnode)
-        IDTip:addLine(GameTooltip, nid, IDTip.kinds.profspecnode)
-        IDTip:addLine(GameTooltip, self:GetConfigID(), IDTip.kinds.traitconfig)
-      end
-
-      ProfessionsFrame.SpecPage.DetailedView.Path:HookScript("OnEnter", hookProfSpecPathEnter)
-
-      hooksecurefunc(ProfessionsSpecPathMixin, "OnEnter", hookProfSpecPathEnter)
-    end)
-
     -- local function gameobjecthandler(tooltip, tooltipData)
     --   -- DevTools_Dump(tooltipData)
     --   -- it may be possible to export GameObjects db2 and map GameObject[name][playerMapId] -> displayID/gameObjectID, but it would add probably 10-15MB of data to the addon, they could be seperate support files for users who want that functionality though..
