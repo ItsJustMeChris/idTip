@@ -336,6 +336,12 @@ if IDTip.Helpers.IsDragonflight() or IDTip.Helpers.IsPTR() then
     hooksecurefunc(QuestInfoReputationRewardButtonMixin, "OnEnter", function(self)
       IDTip:addLine(GameTooltip, self.factionID, IDTip.kinds.faction)
     end)
+    
+    IDTip:RegisterAddonLoad("Blizzard_OrderHallUI", function()
+      hooksecurefunc(GarrisonTalentButtonMixin, "OnEnter", function(self)
+        IDTip:addLine(GameTooltip, self.talent.id, IDTip.kinds.cgarrisontalent)
+      end)
+    end)
 
     IDTip:RegisterAddonLoad("Blizzard_Professions", function()
       hooksecurefunc(ProfessionSpecTabMixin, "OnEnter", function(self)
